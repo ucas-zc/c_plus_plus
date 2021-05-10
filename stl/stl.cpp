@@ -68,6 +68,15 @@ int32_t PerformStl::PerformVector()
     if (vec.size() != 10)
         return STL_FAIL;
     /** end size **/
+  
+    /** vector的capacity函数，返回对象中真实存储大小，这里需要注意与size的区别 **/
+    if (vec.capacity() != 10)
+        return STL_FAIL;
+    /** end capacity **/
+
+    /** vector的max_size函数，返回vector所能储存的最大的元素数目 **/
+    vec.max_size();
+    /**end max_size **/
 
     /** vector的push_back函数，向vector对象中尾部添加元素 **/
     for (uint32_t uIndex = 0; uIndex < 10; ++uIndex)
@@ -105,6 +114,50 @@ int32_t PerformStl::PerformVector()
     if (vec.back() != 9)
         return STL_FAIL;
     /** end end **/
+
+    /*
+     * C++11 语法
+     * vector的cbegin函数，功能与begin函数相同，但不同的是，cbegin用变量接受
+     * cbegin()的返回值时，变量的类型必须为const类型（且修饰指针指向的内容，
+     * 其自身的值可以改变，但指向内容的值不允许改变，可用auto简化书写），只
+     * 能进行遍历不能对vector中的元素进行修改。
+     * 同理，cend函数也是如此。同时，cbegin与cend函数是C++11里面拥有的语法
+     */
+    for (uint32_t uIndex = 0; uIndex < 10; ++uIndex)
+        first.push_back(uIndex);
+    uint32_t uTemp = 0;
+    for (auto it = first.cbegin(); it != first.cend(); ++it)
+    {
+        if (uTemp != *it)
+            return STL_FAIL;
+        ++uTemp;
+    }
+    /** end cbegin cend **/
+
+    /*
+     * C++11 语法
+     * vector的crbegin函数，返回值是一个具有const属性的指向序列反向开头的
+     * 反向迭代器，同理，crend函数返回一个const_reverse_iterator指向倒序
+     * 序列的尾部。
+     */
+    for (auto it = first.crbegin(); it != first.crend(); ++it)
+    {
+        --uTemp;
+        if (uTemp != *it)
+            return STL_FAIL;
+    }
+    /** end crbegin crend **/
+
+    /** C++11语法 vector的data函数，返回一个直接指向内存中存储vector元素位置的指针 **/
+    int32_t *ptr = first.data();
+    if (*ptr != 0 || *(++ptr) != 1 || *(++ptr) != 2
+					|| *(++ptr) != 3 || *(++ptr) != 4 || *(++ptr) != 5
+					|| *(++ptr) != 6 || *(++ptr) != 7 || *(++ptr) != 8
+					|| *(++ptr) != 9)
+    {
+        return STL_FAIL;
+    }
+    /** end data **/ 
 
     return STL_OK;
 }
